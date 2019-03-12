@@ -9,17 +9,17 @@ use Zend\Expressive\Router\Route as ZendRoute;
 /**
  * Register and matches Routes
  */
-class Router 
+class Router
 {
     /**
-     * 
+     *
      * @var FastRouteRouter
      */
-    private $router; 
+    private $router;
 
     public function __construct()
     {
-      $this->router = new FastRouteRouter();
+        $this->router = new FastRouteRouter();
     }
 
     /**
@@ -29,9 +29,9 @@ class Router
      * @param string $name
      * @return void
      */
-    public function get($path,$callable,$name)
+    public function get($path, $callable, $name)
     {
-        $this->router->addRoute(new ZendRoute($path,$callable,['GET'],$name));
+        $this->router->addRoute(new ZendRoute($path, $callable, ['GET'], $name));
     }
 
     /**
@@ -42,19 +42,18 @@ class Router
     public function match(ServerRequestInterface $request): ?Route
     {
         $result =  $this->router->match($request);
-        if($result->isSuccess())
-        {
+        if ($result->isSuccess()) {
             return new Route(
-            $result->getMatchedRouteName(),
-            $result->getMatchedMiddleware(),
-            $result->getMatchedParams()
+                $result->getMatchedRouteName(),
+                $result->getMatchedMiddleware(),
+                $result->getMatchedParams()
             );
         }
         return null;
     }
 
-    public function generateUri(string $name,array $params) :string
+    public function generateUri(string $name, array $params) :string
     {
-        return $this->router->generateUri($name,$params);
+        return $this->router->generateUri($name, $params);
     }
 }

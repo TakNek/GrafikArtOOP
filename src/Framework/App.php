@@ -27,12 +27,14 @@ class App
      * @param string[] $modules Liste des modules a charger.
      */
 
-    public function __construct(array $modules = [])
+    public function __construct(array $modules = [], array $dependencies = [])
     {
         $this->router = new Router;
-        
+        if (array_key_exists('renderer', $dependencies)) {
+            $dependencies['renderer']->addGlobal('router', $this->router);
+        }
         foreach ($modules as $module) {
-            $this->modules[] = new $module($this->router);
+            $this->modules[] = new $module($this->router, $dependencies['renderer']);
         }
     }
 
@@ -47,23 +49,21 @@ class App
        
         $route = $this->router->match($request);
         
-        if(is_null($route)){
-        return new Response(404, [], '<h1>Error 404</h1>');
+        if (is_null($route)) {
+            return new Response(404, [], '<h1>Error 404</h1>');
         }
 
         $params = $route->getParams();
-        $request = array_reduce(array_keys($params), function($request, $key) use ($params){
+        $request = array_reduce(array_keys($params), function ($request, $key) use ($params) {
             return $request->withAttribute($key, $params[$key]);
-        },$request);
+        }, $request);
         
-        $response = call_user_func_array($route->getCallback(),[$request]);
-        if(is_string($response)){
-            return new Response(200,[],(string) $response);
-        }elseif($response instanceof ResponseInterface)
-        {
+        $response = call_user_func_array($route->getCallback(), [$request]);
+        if (is_string($response)) {
+            return new Response(200, [], (string) $response);
+        } elseif ($response instanceof ResponseInterface) {
             return $response;
-        }else
-        {
+        } else {
             throw new \Exception('the response is not a string or an instance of response interface');
         }
     }
