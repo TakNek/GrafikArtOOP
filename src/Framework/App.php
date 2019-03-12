@@ -15,13 +15,13 @@ class App
      *
      * @var array
      */
-    public $modules = [];
+    private $modules = [];
     /**
      * The App Router
      *
      * @var Router
      */
-    public $router;
+    private $router;
     /**
      * App constructor.
      * @param string[] $modules Liste des modules a charger.
