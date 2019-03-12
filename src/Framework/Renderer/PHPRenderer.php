@@ -1,8 +1,8 @@
 <?php
 
-namespace Framework;
+namespace Framework\Renderer;
 
-class Renderer
+class PHPRenderer implements RendererInterface
 {
     const DEFAULT_NAMESPACE = 'blog';
 
@@ -22,6 +22,15 @@ class Renderer
      * @param string|null $path
      * @return void
      */
+
+
+    public function __construct(?string $defaultpath = null)
+    {
+        if (!is_null($defaultpath)) {
+            $this->addPath($defaultpath);
+        }
+    }
+
     public function addPath(string $namespace, ?string $path = null) : void
     {
         if (is_null($path)) {

@@ -1,17 +1,19 @@
 <?php
 
-use Framework\App;
-use Framework\Router;
-use Framework\Renderer;
-use App\Blog\BlogModule;
-use GuzzleHttp\Psr7\ServerRequest;
+
 
 require '..\vendor\autoload.php';
-$renderer = new Renderer();
-$renderer->addPath(dirname(__DIR__).DIRECTORY_SEPARATOR.'views');
-//dump(dirname(__DIR__).DIRECTORY_SEPARATOR.'views'); die();
-$app = new App([BlogModule::class], [
+$renderer = new Framework\Renderer\TwigRenderer(dirname(__DIR__).DIRECTORY_SEPARATOR.'views');
+
+
+//$renderer->addPath(dirname(__DIR__).DIRECTORY_SEPARATOR.'views');
+//$loader = new Twig_Loader_Filesystem(dirname(__DIR__).DIRECTORY_SEPARATOR.'views');
+//$twig = new Twig_Environement($loader, [
+
+//]);
+
+$app = new Framework\App([App\Blog\BlogModule::class], [
     'renderer' => $renderer
 ]);
-$response = $app->run(ServerRequest::fromGlobals());
+$response = $app->run(GuzzleHttp\Psr7\ServerRequest::fromGlobals());
 \Http\Response\send($response);
