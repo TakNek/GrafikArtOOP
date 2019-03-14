@@ -1,8 +1,8 @@
 {% extends "layout.twig" %}
-{% block titre slug %}
+{% block titre post.name %}
 {% block body %}
-<h1>Bienvenu Sur L'Article {{slug}}</h1>
+<h1>Bienvenu Sur L'Article {{post.name}}</h1>
 
-
+{{post.content}}
 
 {% endblock %}
