@@ -3,6 +3,8 @@
 {% block body %}
 <h1>Bienvenu Sur L'Article {{post.name}}</h1>
 
+<p class="text-muted"> {{ post.created_at | ago }} </p>
+
 {{post.content}}
 
 {% endblock %}

@@ -28,13 +28,14 @@ class BlogAction
         if ($request->getAttribute('id')) {
             return $this->show($request);
         } else {
-            return $this->index();
+            return $this->index($request);
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $posts = $this->postTable->findPaginated();
+        $params = $request->getQueryParams();
+        $posts = $this->postTable->findPaginated(12, $params['p'] ?? 1);
         return $this->renderer->render('@blog\index', compact('posts'));
     }
     
