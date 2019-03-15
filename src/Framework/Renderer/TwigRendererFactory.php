@@ -18,6 +18,6 @@ class TwigRendererFactory
             }
             $twig->addExtension(new \Twig\Extension\DebugExtension());
         }
-        return new TwigRenderer($loader, $twig);
+        return new TwigRenderer($twig);
     }
 }
