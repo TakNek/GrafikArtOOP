@@ -59,8 +59,17 @@
 <br>
 
 <main role="main" class="container">
+{% if flash('success') %}
+  <div class="alert alert-success">
+    {{ flash('success') }}
+  </div>
+{% endif %}
+{% if flash('Error') %}
+  <div class="alert alert-danger">
+    {{ flash('Error') }}
+  </div>
+{% endif %}
 
- 
 {% block body %}{% endblock %}
 
 </main>
