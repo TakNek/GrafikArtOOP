@@ -2,6 +2,7 @@
 namespace App\Blog\Actions;
 
 use Framework\Router;
+use Framework\Validator;
 use App\Blog\Table\PostTable;
 use GuzzleHttp\Psr7\Response;
 use Framework\Session\FlashService;
@@ -68,11 +69,16 @@ class AdminBlogAction
             $params = $this->getParams($request);
             $params['updated_at'] = date('Y/m/d H:i:s');
             $params['created_at'] = date('Y/m/d H:i:s');
+            $validator = $this->getValidator($request);
+            if($validator->isValid())
+            {
             $this->postTable->update($item->id, $params);
             $this->flash->success('L\'article a bien été modifié');
-            return $this->redirect('blog.admin.index');
+            return $this->redirect('blog.admin.index');   
+            }
+            $errors = $validator->getErrors();
         }
-        return $this->renderer->render('@blog\admin\edit', compact('item'));
+        return $this->renderer->render('@blog\admin\edit', compact('item','errors'));
     }
 
     public function create(Request $request)
@@ -82,11 +88,16 @@ class AdminBlogAction
             $params = $this->getParams($request);
             $params['updated_at'] = date('Y/m/d H:i:s');
             $params['created_at'] = date('Y/m/d H:i:s');
+            $validator = $this->getValidator($request);
+            if($validator->isValid())
+            {
             $this->postTable->insert($params);
             $this->flash->success('L\'article a bien été crée !');
-            return $this->redirect('blog.admin.index');
+            return $this->redirect('blog.admin.index');   
+            }
+            $errors = $validator->getErrors();
         }
-        return $this->renderer->render('@blog\admin\create');
+        return $this->renderer->render('@blog\admin\create', compact('errors'));
     }
 
 
@@ -101,4 +112,14 @@ class AdminBlogAction
             return in_array($key, ['name','content', 'slug']);
         }, ARRAY_FILTER_USE_KEY);
     }
+
+    private function getValidator(Request $request)
+    {
+        return (new Validator($request->getParsedBody()))
+                ->required('content', 'name' , 'slug')
+                ->length('content', 10)
+                ->length('name', 2,250)
+                ->length('slug', 2,50)
+                ->slug('slug');
+            }
 }
